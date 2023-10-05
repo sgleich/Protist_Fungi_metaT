@@ -2,6 +2,9 @@
 **By: Samantha Gleich & Syrena Whitner**   
 **Last modified: 10/4/23**
 
+![](static/protist.png)
+![](static/fungi.tiff)
+
 ## Trim Sequences - Trimmomatic
 Trim sequences using trimmomatic version 0.40
 ```
