@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 10/5/23
+## Last modified: 10/12/23
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
@@ -13,5 +13,5 @@ java -jar /paragon/trimmomatic_2023/Trimmomatic/dist/jar/trimmomatic-0.40-rc1.ja
 ## Separate rRNA from the read pool - SortMeRNA
 We will use the [PR2 database](https://pr2-database.org) version 5.0.0 and SortMeRNA version 4.3.6
 ```
-sortmerna --ref pr2_version_5.0.0_SSU_mothur.fasta --reads sample_R1_trimmed.fastq --reads sample_R2_trimmed.fastq
+sortmerna --ref pr2_version_5.0.0_SSU_mothur.fasta --reads sample_R1_trimmed.fastq --reads sample_R2_trimmed.fastq --sam --fastx --aligned aligned --other other --paired_in --out2
 ```
