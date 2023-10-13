@@ -36,7 +36,7 @@ Concatenated all non-rRNA reads into single R1 and R2 files.
 cat sample1_other_R1.fq sample2_other_R1.fq sample3_other_R1.fq > all_R1.fq  
 cat sample1_other_R2.fq sample2_other_R2.fq sample3_other_R2.fq > all_R2.fq
 ```
-Use the SPAdes assembly program (version X) to assemble the metatranscriptome.
+Use the SPAdes assembly program (v 3.12.0) to assemble the metatranscriptome.
 ```
 rnaspades.py -m 500 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
 ```
