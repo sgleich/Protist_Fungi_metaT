@@ -16,16 +16,27 @@ Use the [PR2 database](https://pr2-database.org) version 5.0.0 and SortMeRNA ver
 sortmerna --ref pr2_version_5.0.0_SSU_mothur.fasta --reads sample_R1_trimmed.fastq --reads sample_R2_trimmed.fastq --sam --fastx --aligned aligned --other other --paired_in --out2
 ```
 ## miTag (rRNA) analysis - QIIME2 VSEARCH
-Use qiime2 (version 2020.6) vsearch and PR2 version 5.0.0 to assign taxonomic annotations to rRNA reads (i.e., reads in the "aligned" files from SortMeRNA).
+Use qiime2 (version 2022.2) vsearch and PR2 version 5.0.0 to assign taxonomic annotations to rRNA reads (i.e., reads in the "aligned" files from SortMeRNA).  
+  
+First, convert fastq file to fasta format.
 ```
-code
+sed -n '1~4s/^@/>/p;2~4p' sample_aligned_R1.fq > sample_aligned_R1.fasta
+```
+Now import the R1 fasta file into qiime2 as a qza file.
+```
+qiime tools import --input-path sample_aligned_R1.fasta --output-path sample_aligned_R1.qza --type 'FeatureData[Sequence]'
+```
+Now execute the feature-classifier classify-consensus-vsearch command in qiime2. Here you will specify the database the sequences will be annotated against. In this case, the database is PR2 v.5.0.0.
+```
+qiime feature-classifier classify-consensus-vsearch --i-query sample_aligned_R1.qza --i-reference-reads pr2_version_5.0.0_seq.qza --i-reference-taxonomy pr2_version_5.0.0_tax.qza --o-classification sample_aligned_miTag
 ```
 ## Metatrascriptome assembly - rnaSPAdes
 Concatenated all non-rRNA reads into single R1 and R2 files.
 ```
-code
+cat sample1_other_R1.fq sample2_other_R1.fq sample3_other_R1.fq > all_R1.fq  
+cat sample1_other_R2.fq sample2_other_R2.fq sample3_other_R2.fq > all_R2.fq
 ```
 Use the SPAdes assembly program (version X) to assemble the metatranscriptome.
 ```
-code
+rnaspades.py -m 500 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
 ```
