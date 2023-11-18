@@ -40,7 +40,7 @@ Use the SPAdes assembly program (v 3.12.0) to assemble the metatranscriptome.
 ```
 rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
 ```
-## Run rnaQUAST to get assembly statistics
+## Assembly statistics - rnaQUAST
 ```
 code
 ```
