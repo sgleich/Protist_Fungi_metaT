@@ -36,9 +36,13 @@ Concatenated all non-rRNA reads into single R1 and R2 files.
 cat sample1_other_R1.fq sample2_other_R1.fq sample3_other_R1.fq > all_R1.fq  
 cat sample1_other_R2.fq sample2_other_R2.fq sample3_other_R2.fq > all_R2.fq
 ```
+Re-pair reads using bbmap repair.sh
+```
+repair.sh in=all_R1.fq in2=all_R2.fq out=all_new_R1.fq out2=all_new_R2.fq
+```
 Use the SPAdes assembly program (v 3.12.0) to assemble the metatranscriptome.
 ```
-rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
+rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_new_R1.fq -2 ./all_new_R2.fq 
 ```
 ## Assembly statistics - rnaQUAST
 ```
