@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 10/13/23
+## Last modified: 11/18/23
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
@@ -38,5 +38,13 @@ cat sample1_other_R2.fq sample2_other_R2.fq sample3_other_R2.fq > all_R2.fq
 ```
 Use the SPAdes assembly program (v 3.12.0) to assemble the metatranscriptome.
 ```
-rnaspades.py -m 500 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
+rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_R1.fq -2 ./all_R2.fq 
+```
+## Run rnaQUAST to get assembly statistics
+```
+code
+```
+## Map reads to assembled contigs - salmon
+```
+code
 ```
