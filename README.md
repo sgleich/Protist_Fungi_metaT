@@ -54,7 +54,12 @@ rnaQUAST.py -c ./hard_filtered_transcripts.fasta -o rnaspades_quast_out
 code
 ```
 ## Identify putative protein-coding regions - Transdecoder
-Use transdecoder v. 5.7.1 to identify putative protein coding regions that are greater than 300 aa long.
+Use transdecoder v. 5.7.1 to identify putative protein coding regions that are greater than 200 aa long.
 ```
-TransDecoder.LongOrfs -m 300 -t hard_filtered_transcripts.fasta -O transdecoder_rnaspades
+TransDecoder.LongOrfs -m 200 -t hard_filtered_transcripts.fasta -O transdecoder_rnaspades
+```
+## Functional annotations - eggnog-mapper
+Use eggnog-mapper v. 2.0.1 to assign functional annotations to the putative protein-coding regions. 
+```
+emapper.py -i longest_orfs.pep --output eggnog_rnaspades -m diamond
 ```
