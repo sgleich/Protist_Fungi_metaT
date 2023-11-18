@@ -40,15 +40,21 @@ Re-pair reads using bbmap repair.sh
 ```
 repair.sh in=all_R1.fq in2=all_R2.fq out=all_new_R1.fq out2=all_new_R2.fq
 ```
-Use the SPAdes assembly program (v 3.12.0) to assemble the metatranscriptome.
+Use the SPAdes assembly program (v 3.15.5) to assemble the metatranscriptome.
 ```
 rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_new_R1.fq -2 ./all_new_R2.fq 
 ```
 ## Assembly statistics - rnaQUAST
+Calculate assembly statistics using rnaQUAST v. 2.2.2
 ```
-code
+rnaQUAST.py -c ./hard_filtered_transcripts.fasta -o rnaspades_quast_out
 ```
 ## Map reads to assembled contigs - salmon
 ```
 code
+```
+## Identify putative protein-coding regions - Transdecoder
+Use transdecoder v. 5.7.1 to identify putative protein coding regions that are greater than 300 aa long.
+```
+TransDecoder.LongOrfs -m 300 -t hard_filtered_transcripts.fasta -O transdecoder_rnaspades
 ```
