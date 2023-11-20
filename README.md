@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 11/18/23
+## Last modified: 11/20/23
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
@@ -50,8 +50,13 @@ Calculate assembly statistics using rnaQUAST v. 2.2.2
 rnaQUAST.py -c ./hard_filtered_transcripts.fasta -o rnaspades_quast_out
 ```
 ## Map reads to assembled contigs - salmon
+Use salmon v. 1.10.1 to map transcripts to rnaSPAdes assembled contigs. First make a salmon index.
 ```
-code
+salmon index -t hard_filtered_transcripts.fasta -i salmon_index
+```
+Then map transcripts from each sample to this index. 
+```
+salmon quant -i salmon_index -l A -1 sample1_other_R1.fq -2 sample1_other_R2.fq -o sample1_salmon
 ```
 ## Identify putative protein-coding regions - Transdecoder
 Use transdecoder v. 5.7.1 to identify putative protein coding regions that are greater than 200 aa long.
@@ -62,4 +67,8 @@ TransDecoder.LongOrfs -m 200 -t hard_filtered_transcripts.fasta -O transdecoder_
 Use eggnog-mapper v. 2.0.1 to assign functional annotations to the putative protein-coding regions. 
 ```
 emapper.py -i longest_orfs.pep --output eggnog_rnaspades -m diamond
+```
+## Taxonomic annotations - EUKulele
+```
+code coming.
 ```
