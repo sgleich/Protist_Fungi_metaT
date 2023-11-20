@@ -47,7 +47,7 @@ rnaspades.py -t 16 -m 1100 -o rnaspades_out -1 all_new_R1.fq -2 ./all_new_R2.fq
 ## Assembly statistics - rnaQUAST
 Calculate assembly statistics using rnaQUAST v. 2.2.2
 ```
-rnaQUAST.py -c ./hard_filtered_transcripts.fasta -o rnaspades_quast_out
+rnaQUAST.py -c hard_filtered_transcripts.fasta -o rnaspades_quast_out
 ```
 ## Map reads to assembled contigs - salmon
 Use salmon v. 1.10.1 to map transcripts to rnaSPAdes assembled contigs. First make a salmon index.
