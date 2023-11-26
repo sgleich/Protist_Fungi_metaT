@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 11/20/23
+## Last modified: 11/26/23
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
@@ -15,20 +15,42 @@ Use the [PR2 database](https://pr2-database.org) version 5.0.0 and SortMeRNA ver
 ```
 sortmerna --ref pr2_version_5.0.0_SSU_mothur.fasta --reads sample_R1_trimmed.fastq --reads sample_R2_trimmed.fastq --sam --fastx --aligned aligned --other other --paired_in --out2
 ```
+## miTag (rRNA) analysis - Make QIIME2 classifier using the PR2 18S rRNA database
+Use qiime2 (version 2022.2) to make a PR2 (version 5.0.0) 18S rRNA classifier.  
+```
+qiime feature-classifier fit-classifier-naive-bayes --i-reference-reads pr2_version_5.0.0_seq.qza --i-reference-taxonomy pr2_version_5.0.0_tax.qza --o-classifier pr2_version_5.0.0_classifier.qza
+```
 ## miTag (rRNA) analysis - QIIME2 VSEARCH
 Use qiime2 (version 2022.2) vsearch and PR2 version 5.0.0 to assign taxonomic annotations to rRNA reads (i.e., reads in the "aligned" files from SortMeRNA).  
   
-First, convert fastq file to fasta format.
+First upload the rRNA reads into qiime2 format. The manifest.txt file is a comma-separated manifest file in the qiime2-specified format (sample-id,absolute-filepath,direction). This manifest.txt file lists all of the R1 and R2 rRNA read files obtained using SortMeRNA.
 ```
-sed -n '1~4s/^@/>/p;2~4p' sample_aligned_R1.fq > sample_aligned_R1.fasta
+qiime tools import --type 'SampleData[PairedEndSequencesWithQuality]' --input-path manifest.txt --output-path demux.qza --input-format PairedEndFastqManifestPhred33
 ```
-Now import the R1 fasta file into qiime2 as a qza file.
+Then, join the paired-end reads.
 ```
-qiime tools import --input-path sample_aligned_R1.fasta --output-path sample_aligned_R1.qza --type 'FeatureData[Sequence]'
+qiime vsearch join-pairs --i-demultiplexed-seqs demux.qza --o-joined-sequences demux-joined.qza --p-minmergelen 200
 ```
-Now execute the feature-classifier classify-consensus-vsearch command in qiime2. Here you will specify the database the sequences will be annotated against. In this case, the database is PR2 v.5.0.0.
+Dereplicate the sequences (i.e., collapse identical sequences).
 ```
-qiime feature-classifier classify-consensus-vsearch --i-query sample_aligned_R1.qza --i-reference-reads pr2_version_5.0.0_seq.qza --i-reference-taxonomy pr2_version_5.0.0_tax.qza --o-classification sample_aligned_miTag
+qiime vsearch dereplicate-sequences --i-sequences demux-joined.qza --o-dereplicated-table table.qza --o-dereplicated-sequences rep-seqs.qza
+```
+Cluster sequences at 97% similarity - create 97% OTUs.
+```
+qiime vsearch cluster-features-de-novo --i-table table.qza --i-sequences rep-seqs.qza --p-perc-identity 0.97 --o-clustered-table table-dn-97.qza --o-clustered-sequences rep-seqs-dn-97.qza
+```
+Assign taxonomy to the 97% OTUs using the previously made PR2 classifier. 
+```
+qiime feature-classifier classify-sklearn --i-classifier pr2_version_5.0.0_classifier.qza --i-reads rep-seqs-dn-97.qza --o-classification tax_sklearn.qza
+```
+Export OTU table and taxonomy table for rRNA analysis/visualization. 
+```
+qiime tools export --input-path tax_sklearn.qza --output-path output
+
+qiime tools export --input-path table-dn-97.qza --output-path output
+
+cd ./output
+biom convert -i feature-table.biom -o feature-table.tsv --to-tsv
 ```
 ## Metatrascriptome assembly - rnaSPAdes
 Concatenated all non-rRNA reads into single R1 and R2 files.
