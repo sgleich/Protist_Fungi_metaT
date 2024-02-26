@@ -81,16 +81,17 @@ Then map transcripts from each sample to this index.
 salmon quant -i salmon_index -l A -1 sample1_other_R1.fq -2 sample1_other_R2.fq -o sample1_salmon
 ```
 ## Identify putative protein-coding regions - Transdecoder
-Use transdecoder v. 5.7.1 to identify putative protein coding regions.
+Use transdecoder v. 5.7.1 to identify putative protein coding regions > 200 amino acids. 
 ```
-TransDecoder.LongOrfs -t hard_filtered_transcripts.fasta -O transdecoder_rnaspades
+TransDecoder.LongOrfs -m 200 -t hard_filtered_transcripts.fasta -O transdecoder_rnaspades
 ```
 ## Functional annotations - eggnog-mapper
-Use eggnog-mapper v. 2.0.1 to assign functional annotations to the putative protein-coding regions. 
+Use eggnog-mapper v. 2.0.1 to assign functional annotations to the putative protein-coding sequences. 
 ```
 emapper.py -i longest_orfs.pep --output eggnog_rnaspades -m diamond
 ```
 ## Taxonomic annotations - EUKulele
+Use EUKulele v. 2.0.3 and a custom MMETSP + Mycocosm database to assign taxonomic annotations to the putative protein-coding sequences. The database references pointed to here (fungi_mast_mmetsp.fa, fungi_mast_mmetsp_db.txt, fungi_mast_mmetsp_db.json) were created using the [Protist_Fungi_DB](https://github.com/sgleich/Protist_Fungi_DB) repository.
 ```
-code coming.
+EUKulele -m mets --sample_dir /path/to/predicted/proteins --reference_dir /path/to/db/reference --ref_fasta fungi_mast_mmetsp.fa --n_ext cds --tax_table fungi_mast_mmetsp_db.txt --protein_map fungi_mast_mmetsp_db.json
 ```
