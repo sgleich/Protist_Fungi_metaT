@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 1/5/24
+## Last modified: 2/26/24
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
