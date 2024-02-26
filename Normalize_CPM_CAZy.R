@@ -39,7 +39,7 @@ dfAll$KEGG <- NULL
 dfAll$CAZy <- ifelse(is.na(dfAll$CAZy),"",dfAll$CAZy)
 dfAll$CAZy <- str_split(dfAll$CAZy,",")
 dfWide <- unnest(dfAll,CAZy)
-colnames(dfWide)[1:3] <- c("Name","Taxonomy","KEGG")
+colnames(dfWide)[1:3] <- c("Name","Taxonomy","CAZy")
 dfWide  <- dfWide %>% distinct(.,.keep_all = TRUE) %>% as.data.frame()
 
 # Separate Exp #1 and Exp #2 from Exp #3 (Experiment #3 was sequenced separately)
