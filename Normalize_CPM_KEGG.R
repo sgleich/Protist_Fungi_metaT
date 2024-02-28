@@ -1,14 +1,14 @@
 ### Protist + Fungi MetaT - Library Normalization and CPM Calculation ###
 ### This script will normalize and calculate the CPM of the decomposition experiment metaT data to use in downstream KEGG KO analyses ###
-### Updated: February 26, 2024 ###
+### Updated: February 28, 2024 ###
 
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL")
 
 # Load in taxonomic IDs (dfEuk), functional IDs (dfEgg), and transcript abundances (dfSalmon)
-dfEuk <- read.delim(file.choose(),header=TRUE,sep="\t")
-dfEgg <- read.delim(file.choose(),header=TRUE,skip=3)
-dfSalmon <- read.csv(file.choose(),header=TRUE,row.names=1)
+dfEuk <- read.delim("eukulele_tax_myco.annotations",header=TRUE,sep="\t")
+dfEgg <- read.delim("eggnog_func.annotations",header=TRUE,skip=3)
+dfSalmon <- read.csv("salmon_wide.csv",header=TRUE,row.names=1)
 
 # Get taxonomic ID with the max pid.
 dfEuk <- dfEuk[c(2,4,6)]
