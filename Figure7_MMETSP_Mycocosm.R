@@ -1,5 +1,5 @@
-### Protist + Fungi MetaT - Figure 4 - Taxa barplot fungi ###
-### This script will allow us to visualize the taxonomic breakdown to the fungal community across the 3 decomposition experiments ###
+### Protist + Fungi MetaT - Figure 7 - Taxa barplot fungi ###
+### This script will allow us to visualize the differences in the number of fungal vs. non-fungal transcripts when using different databases to assign taxonomy to metaT reads. ###
 ### Updated: February 26, 2024 ###
 
 # Set working directory
