@@ -1,11 +1,11 @@
 ### Protist + Fungi MetaT - Figure 3 - Taxa barplot whole eukaryotic community ###
 ### This script will allow us to visualize the taxonomic breakdown to the microeukaryote community across the 3 decomposition experiments ###
-### Updated: February 26, 2024 ###
+### Updated: February 28, 2024 ###
 
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL")
 
-dfFin <- read.csv(file.choose(),header=TRUE,row.names=1)
+dfFin <- read.csv("CPM_all_KEGG.csv",header=TRUE,row.names=1)
 
 dfTax <- dfFin[c(2,4:18)]
 
