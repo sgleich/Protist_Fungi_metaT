@@ -1,14 +1,14 @@
 ### Protist + Fungi MetaT - Library Normalization and CPM Calculation ###
 ### This script will normalize and calculate the CPM of the decomposition experiment metaT data to use in downstream CAZy analyses ###
-### Updated: February 26, 2024 ###
+### Updated: February 28, 2024 ###
 
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL")
 
 # Load in taxonomic IDs (dfEuk), functional IDs (dfEgg), and transcript abundances (dfSalmon)
-dfEuk <- read.delim(file.choose(),header=TRUE,sep="\t")
-dfEgg <- read.delim(file.choose(),header=TRUE,skip=3)
-dfSalmon <- read.csv(file.choose(),header=TRUE,row.names=1)
+dfEuk <- read.delim("eukulele_tax_myco.annotations",header=TRUE,sep="\t")
+dfEgg <- read.delim("eggnog_func.annotations",header=TRUE,skip=3)
+dfSalmon <- read.csv("salmon_wide.csv",header=TRUE,row.names=1)
 
 # Get taxonomic ID with the max pid.
 dfEuk <- dfEuk[c(2,4,6)]
@@ -43,8 +43,8 @@ colnames(dfWide)[1:3] <- c("Name","Taxonomy","CAZy")
 dfWide  <- dfWide %>% distinct(.,.keep_all = TRUE) %>% as.data.frame()
 
 # Separate Exp #1 and Exp #2 from Exp #3 (Experiment #3 was sequenced separately)
-dfExp12 <- dfWide[,c("Name","Taxonomy","KEGG","RotT0_Exp1","RotT3_Exp1","RotT6_Exp1","RotT0_Exp2","RotT3_Exp2","RotT6_Exp2","WaterColumn1_Exp1","WaterColumn2_Exp1","WaterColumn1_Exp2","WaterColumn2_Exp2")]
-dfExp3 <- dfWide[,c("Name","Taxonomy","KEGG","RotT0_Exp3","RotT3_Exp3","RotT6_Exp3","WaterColumn1_Exp3","WaterColumn2_Exp3")] 
+dfExp12 <- dfWide[,c("Name","Taxonomy","CAZy","RotT0_Exp1","RotT3_Exp1","RotT6_Exp1","RotT0_Exp2","RotT3_Exp2","RotT6_Exp2","WaterColumn1_Exp1","WaterColumn2_Exp1","WaterColumn1_Exp2","WaterColumn2_Exp2")]
+dfExp3 <- dfWide[,c("Name","Taxonomy","CAZy","RotT0_Exp3","RotT3_Exp3","RotT6_Exp3","WaterColumn1_Exp3","WaterColumn2_Exp3")] 
 
 # Normalize Exp 1&2 Libraries and Calculate CPM
 dgeExp12_list <- DGEList(counts=dfExp12[4:13],genes=dfExp12[1:3],group=c(rep("T0_Exp1",1),rep("T3_Exp1",1),rep("T6_Exp1",1),rep("T0_Exp2",1),rep("T3_Exp2",1),rep("T6_Exp2",1),rep("Water_Exp1",2),rep("Water_Exp2",2)))
