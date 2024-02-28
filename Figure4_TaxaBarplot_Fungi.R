@@ -5,7 +5,7 @@
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL")
 
-dfFin <- read.csv(file.choose(),header=TRUE,row.names=1)
+dfFin <- read.csv("CPM_Fungi_KEGG.csv",header=TRUE,row.names=1)
 
 dfTax <- dfFin[c(2,4:18)]
 
