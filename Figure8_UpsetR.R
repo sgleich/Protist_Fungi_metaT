@@ -10,8 +10,25 @@ library(ggupset)
 library(stringi)
 library(patchwork)
 
+# Determine which CAZymes are present ( > 0 CPM) in all experiment
+dfFin <- read.csv("CPM_all_CAZy.csv",header=TRUE,row.names=1)
+dfFin <- subset(dfFin,CAZy!="")
+dfFin <- dfFin[c(3:18)]
+dfFin <- dfFin %>% group_by(CAZy) %>% summarize_all(sum)
+dfMelt <- melt(dfFin,id.vars="CAZy")
+cols <- colsplit(dfMelt$variable,"_",c("Samp","Exp"))
+dfMelt <- cbind(dfMelt,cols)
+dfMelt$variable <- NULL
+dfMelt$Samp <- NULL
+dfSum <- dfMelt %>% group_by(CAZy,Exp) %>% summarize(s=sum(value))
+dfSumZero <- subset(dfSum,s==0)
+rem <- unique(dfSumZero$CAZy)
+
 # Load in data
 dfFin <- read.csv("CPM_all_CAZy.csv",header=TRUE,row.names=1)
+`%ni%` <- Negate(`%in%`)
+dfFin <- subset(dfFin,CAZy %ni% rem)
+
 
 # Distinguish fungi from all other eukaryotes
 dfFin$Tax <- ifelse(grepl("Fungi",dfFin$Taxonomy),"Fungi","Other Eukaryote")
@@ -62,11 +79,11 @@ colrs <- c("Glycoside Hydrolases"="dodgerblue",
            "Auxiliary Activities"="salmon","Polysaccharide Lyases"="purple")
 
 # Plot each net trap sample individually
-net6 <- keep_df%>% filter(grepl("RotT6",rownames(keep_df))) %>%ggplot(aes(x=Intersect,fill=C)) + geom_bar(stat = "count", position="stack",color="black") + scale_x_upset()+theme_classic(base_size = 16)+xlab("")+ylab("Number of Shared\nand Unique CAZymes")+theme(plot.margin = margin(10, 10, 10, 100))+ggtitle(expression("Net Trap T6"))+scale_fill_manual(name=c("CAZyme Class"),values=c(colrs))+theme(legend.position="right")+ylim(0,70)
+net6 <- keep_df%>% filter(grepl("RotT6",rownames(keep_df))) %>%ggplot(aes(x=Intersect,fill=C)) + geom_bar(stat = "count", position="stack",color="black") + scale_x_upset()+theme_classic(base_size = 16)+xlab("")+ylab("Number of Shared\nand Unique CAZymes")+theme(plot.margin = margin(10, 10, 10, 100))+ggtitle(expression("Net Trap T6"))+scale_fill_manual(name=c("CAZyme Class"),values=c(colrs))+theme(legend.position="right")+ylim(0,40)
 
 
-net0+net3+net6+plot_layout(guides="collect",nrow=3)+plot_annotation(tag_levels="a")
-ggsave("Figure7_Feb2024.pdf",width=9,height=13)
+wc+net0+net3+net6+plot_layout(guides="collect",nrow=2)+plot_annotation(tag_levels="a")
+ggsave("../Figure7_March2024.pdf",width=14,height=8)
 
 ####
 
@@ -74,3 +91,7 @@ fun <- subset(keep_df,Intersect=="Fungi")
 fun$name <- rownames(fun)
 cols <- colsplit(rownames(fun),"_",c("CAZy","Exp"))
 cols %>% group_by(CAZy) %>% tally() %>% arrange(desc(n))
+
+
+keep_df$samp <- rownames(keep_df)
+sub <- subset(keep_df,grepl("GH18",keep_df$samp))
