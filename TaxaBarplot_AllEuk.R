@@ -1,32 +1,34 @@
-### Protist + Fungi MetaT - Figure 3 - Taxa barplot whole eukaryotic community ###
+### Protist + Fungi MetaT - Taxa barplot whole eukaryotic community ###
 ### This script will allow us to visualize the taxonomic breakdown to the microeukaryote community across the 3 decomposition experiments ###
-### Updated: February 28, 2024 ###
+### Updated: May 11, 2024 ###
 
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL")
 
-dfFin <- read.csv("CPM_all_KEGG.csv",header=TRUE,row.names=1)
+dfFin <- read.csv("CPM_AllEuk.csv",header=TRUE,row.names=1)
 
-dfTax <- dfFin[c(2,4:18)]
+dfTax <- dfFin[c(2,5:19)]
+dfTax <- subset(dfTax,Taxonomy!="Eukaryota")
 
 taxz <- colsplit(dfTax$Taxonomy,";",c("d","k","p","c","o","f","g","s"))
-taxz$fin <- ifelse(taxz$c==" Dinophyceae","Dinoflagellate",NA)
-taxz$fin <- ifelse(taxz$p==" Choanoflagellida","Choanoflagellate",taxz$fin)
+taxz$fin <- ifelse(grepl("Dinophyceae",taxz$c),"Dinoflagellate",NA)
+taxz$fin <- ifelse(grepl("Choanoflagellida",taxz$p),"Choanoflagellate",taxz$fin)
 taxz$fin <- ifelse(grepl("MAST",taxz$p),"MAST",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Foraminifera","Foraminifera",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Haptophyta","Haptophyte",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Chlorophyta","Chlorophyte",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Cryptophyta","Cryptophyte",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Fungi","Fungi",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Cercozoa","Cercozoa",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Ciliophora","Ciliate",taxz$fin)
-taxz$fin <- ifelse(taxz$p==" Discoba","Discoba",taxz$fin)
-taxz$fin <- ifelse(taxz$k==" Amoebozoa","Amoebozoa",taxz$fin)
-taxz$fin <- ifelse(taxz$c==" Bacillariophyta","Diatom",taxz$fin)
-taxz$fin <- ifelse(taxz$c==" Pelagophyceae","Pelagophyte",taxz$fin)
-taxz$fin <- ifelse(is.na(taxz$fin) & taxz$k==" Stramenopiles","Other Stramenopiles",taxz$fin)
-taxz$fin <- ifelse(is.na(taxz$fin) & taxz$k==" Alveolata","Other Alveolate",taxz$fin)
-taxz$fin <- ifelse(is.na(taxz$fin) & taxz$k==" Archaeplastida","Other Archaeplastida",taxz$fin)
+taxz$fin <- ifelse(grepl("Foraminifera",taxz$p),"Foraminifera",taxz$fin)
+taxz$fin <- ifelse(grepl("Haptophyta",taxz$p),"Haptophyte",taxz$fin)
+taxz$fin <- ifelse(grepl("Chlorophyta",taxz$p),"Chlorophyte",taxz$fin)
+taxz$fin <- ifelse(grepl("Labyrinthulomycetes",taxz$c),"Labyrinthulomycete",taxz$fin)
+taxz$fin <- ifelse(grepl("Fungi",taxz$p),"Fungi",taxz$fin)
+taxz$fin <- ifelse(grepl("Cercozoa",taxz$p),"Cercozoa",taxz$fin)
+taxz$fin <- ifelse(grepl("Ciliophora",taxz$p),"Ciliate",taxz$fin)
+taxz$fin <- ifelse(grepl("Discoba",taxz$p),"Discoba",taxz$fin)
+taxz$fin <- ifelse(grepl("Amoebozoa",taxz$k),"Amoebozoa",taxz$fin)
+taxz$fin <- ifelse(grepl("Bacillariophyta",taxz$c),"Diatom",taxz$fin)
+taxz$fin <- ifelse(grepl("Pelagophyceae",taxz$c),"Pelagophyte",taxz$fin)
+taxz$fin <- ifelse(grepl("Metazoa",taxz$p),"Metazoa",taxz$fin)
+taxz$fin <- ifelse(is.na(taxz$fin) & grepl("Stramenopiles",taxz$k),"Other Stramenopiles",taxz$fin)
+taxz$fin <- ifelse(is.na(taxz$fin) & grepl("Alveolata",taxz$k),"Other Alveolate",taxz$fin)
+taxz$fin <- ifelse(is.na(taxz$fin) & grepl("Archaeplastida",taxz$k),"Other Archaeplastida",taxz$fin)
 taxz$fin <- ifelse(is.na(taxz$fin),"Other Eukaryote",taxz$fin)
 unique(taxz$fin)
 
@@ -37,7 +39,7 @@ dfTaxMelt <- dfTaxMelt %>% group_by(variable,tax)%>% summarize(s=sum(value))
 
 varSplit <- colsplit(dfTaxMelt$variable,"_",c("Sample","Exp"))
 dfTaxMelt <- cbind(dfTaxMelt,varSplit)
-colrs <- c("Choanoflagellate"="#D46854", "Foraminifera"="#BFA88C","Haptophyte"="#993EE8","Other Stramenopiles"="#D895DD" ,"Chlorophyte"="#72DBBD","Cryptophyte"="#E6B15C" ,"Amoebozoa"="#DBE7D4","Dinoflagellate"="#D2E04E","Discoba"="#72E16B","Diatom"="#D2608C","Other Alveolate"="#DAB8CE","Other Eukaryote"="#7D98D5","Cercozoa"="#C6E198","Fungi"="#84C3D7","Ciliate"="#8169D7","Pelagophyte"="#DB57D1","Other Archaeplastida"="dodgerblue","MAST"="khaki1")
+colrs <- c("Choanoflagellate"="#D46854", "Foraminifera"="#BFA88C","Haptophyte"="#993EE8","Other Stramenopiles"="#D895DD" ,"Chlorophyte"="#72DBBD","Labyrinthulomycete"="#E6B15C" ,"Amoebozoa"="#DBE7D4","Dinoflagellate"="#D2E04E","Discoba"="#72E16B","Diatom"="#D2608C","Other Alveolate"="#DAB8CE","Other Eukaryote"="#7D98D5","Cercozoa"="#C6E198","Fungi"="#84C3D7","Ciliate"="#8169D7","Pelagophyte"="#DB57D1","Other Archaeplastida"="dodgerblue","MAST"="khaki1","Metazoa"="grey")
 
 taxPltFxn <- function(df,exp,title){
   subs <- subset(df, Exp==paste(exp))
@@ -63,4 +65,4 @@ pExp1 <- taxPltFxn(dfTaxMelt,"Exp1","Experiment #1\n2021")
 pExp2 <- taxPltFxn(dfTaxMelt,"Exp2","Experiment #2\n2021")
 pExp3 <- taxPltFxn(dfTaxMelt,"Exp3","Experiment #3\n2022")
 ggarrange(pExp1,pExp2,pExp3,common.legend = TRUE,nrow=1,ncol=3,labels=c("a","b","c"),font.label = list(size=12,color="black",face="plain"),hjust=-0.1,vjust=0.5)
-ggsave("Figure3_Feb2024.pdf",width=17,height=7)
+ggsave("TaxaBarplot.pdf",width=17,height=7)
