@@ -1,6 +1,6 @@
 # PARAGON MetaT Bioinformatic Pipeline
 ## By: Samantha Gleich & Syrena Whitner  
-## Last modified: 2/26/24
+## Last modified: 5/11/24
 
 ![](static/protist.png)
 ![](static/fungi.tiff)
@@ -93,5 +93,5 @@ emapper.py -i longest_orfs.pep --output eggnog_rnaspades -m diamond
 ## Taxonomic annotations - EUKulele
 Use EUKulele v. 2.0.3 and a custom MMETSP + Mycocosm database to assign taxonomic annotations to the putative protein-coding sequences. The database references pointed to here (fungi_mast_mmetsp.fa, fungi_mast_mmetsp_db.txt, fungi_mast_mmetsp_db.json) were created using the [Protist_Fungi_DB](https://github.com/sgleich/Protist_Fungi_DB) repository.
 ```
-EUKulele -m mets --sample_dir /path/to/predicted/proteins --reference_dir /path/to/db/reference --ref_fasta fungi_mast_mmetsp.fa --n_ext cds --tax_table fungi_mast_mmetsp_db.txt --protein_map fungi_mast_mmetsp_db.json
+EUKulele -m mets --sample_dir /path/to/predicted/proteins --reference_dir /path/to/db/reference --ref_fasta fungi_mast_mmetsp.fa --n_ext cds --tax_table fungi_mast_mmetsp_db.txt --protein_map fungi_mast_mmetsp_db.json --cutoff_file tax-cutoffs.yaml
 ```
