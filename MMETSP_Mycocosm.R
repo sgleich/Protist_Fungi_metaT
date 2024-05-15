@@ -1,4 +1,4 @@
-### Protist + Fungi MetaT - Taxa barplot fungi ###
+### Protist + Fungi MetaT - Pie chart comparison ###
 ### This script will allow us to visualize the differences in the number of fungal vs. non-fungal transcripts when using different databases to assign taxonomy to metaT reads. ###
 ### Updated: May 15, 2024 ###
 
