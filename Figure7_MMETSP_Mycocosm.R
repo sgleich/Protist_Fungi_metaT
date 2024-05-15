@@ -1,17 +1,19 @@
-### Protist + Fungi MetaT - Figure 7 - Taxa barplot fungi ###
+### Protist + Fungi MetaT - Taxa barplot fungi ###
 ### This script will allow us to visualize the differences in the number of fungal vs. non-fungal transcripts when using different databases to assign taxonomy to metaT reads. ###
-### Updated: February 29, 2024 ###
+### Updated: May 15, 2024 ###
 
 # Set working directory
-setwd("~/Desktop/PARAGON_DATA_FINAL")
+setwd("~/Desktop/PARAGON_DATA_FINAL/FINAL")
 
-dfMyco <- read.csv("CPM_all_KEGG.csv",header=TRUE,row.names=1)
-dfMMETSP <- read.csv("CPM_all_MMETSP_KEGG.csv",header=TRUE,row.names=1)
+dfMyco <- read.csv("CPM_AllEuk.csv",header=TRUE,row.names=1)
+dfMMETSP <- read.csv("CPM_AllEuk_MMETSP.csv",header=TRUE,row.names=1)
 
 dfMyco$Name <- NULL
 dfMyco$KEGG <- NULL
+dfMyco$CAZy <- NULL
 dfMMETSP$Name <- NULL
 dfMMETSP$KEGG <- NULL
+dfMMETSP$CAZy <- NULL
 
 dfMyco$Fin <- ifelse(grepl("Fungi",dfMyco$Taxonomy),"Fungi","Other Eukaryote")
 dfMMETSP$Fin <- ifelse(grepl("Fungi",dfMMETSP$Taxonomy),"Fungi","Other Eukaryote")
@@ -54,7 +56,7 @@ dfMMEM$s <- NULL
 dfMMEM$s2 <- NULL
 dfMMEM <- dfMMEM %>% group_by(Fin,Sample) %>% summarize(m=mean(per)) %>% as.data.frame()
 
-df <- dfMycoM %>% 
+df <- dfMMEM %>% 
   group_by(Sample) %>% # Variable to be transformed
   mutate(perc = m/ sum(m)) %>% 
   arrange(perc) %>%
@@ -62,9 +64,9 @@ df <- dfMycoM %>%
 
 df$Sample <- factor(df$Sample,levels=c("Water Column","Net Trap T0","Net Trap T3","Net Trap T6"))
 
-mycop <- ggplot(df, aes(x = "", y = perc, fill = Fin)) +
+mmep <- ggplot(df, aes(x = "", y = perc, fill = Fin)) +
   geom_col(color="black") + geom_label(aes(label = labels), position = position_stack(vjust = 0.5), show.legend = FALSE,color="white") +
-  coord_polar(theta = "y")+facet_wrap(~Sample,nrow=1,ncol=4)+theme_void()+scale_fill_manual(name="Taxonomic Group",values=c("black","grey"))+ggtitle("ProFun")
+  coord_polar(theta = "y")+facet_wrap(~Sample,nrow=1,ncol=4)+theme_void()+scale_fill_manual(name="Taxonomic Group",values=c("black","grey"))+ggtitle("MMETSP")
 
 mmep+mycop+plot_layout(guides = "collect",nrow=2)
-ggsave("Figure7_March2024.pdf")
+ggsave("PieChart.pdf")
