@@ -3,7 +3,7 @@
 ### Updated: May 11, 2024 ###
 
 # Set working directory
-setwd("~/Desktop/PARAGON_DATA_FINAL")
+setwd("~/Desktop/PARAGON_DATA_FINAL/FINAL")
 
 dfFin <- read.csv("CPM_AllEuk.csv",header=TRUE,row.names=1)
 
