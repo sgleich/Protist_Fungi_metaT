@@ -1,15 +1,23 @@
 ### Protist + Fungi MetaT - Taxa barplot whole eukaryotic community ###
 ### This script will allow us to visualize the taxonomic breakdown to the microeukaryote community across the 3 decomposition experiments ###
-### Updated: May 11, 2024 ###
+### Updated: June 11, 2024 ###
+
+# Load libraries
+library(ggpubr)
+library(ggplot2)
+library(reshape2)
+library(tidyverse)
+library(patchwork)
 
 # Set working directory
 setwd("~/Desktop/PARAGON_DATA_FINAL/FINAL")
 
+# Load data
 dfFin <- read.csv("CPM_AllEuk.csv",header=TRUE,row.names=1)
-
 dfTax <- dfFin[c(2,5:19)]
 dfTax <- subset(dfTax,Taxonomy!="Eukaryota")
 
+# Group by taxonomic units
 taxz <- colsplit(dfTax$Taxonomy,";",c("d","k","p","c","o","f","g","s"))
 taxz$fin <- ifelse(grepl("Dinophyceae",taxz$c),"Dinoflagellate",NA)
 taxz$fin <- ifelse(grepl("Choanoflagellida",taxz$p),"Choanoflagellate",taxz$fin)
@@ -32,15 +40,20 @@ taxz$fin <- ifelse(is.na(taxz$fin) & grepl("Archaeplastida",taxz$k),"Other Archa
 taxz$fin <- ifelse(is.na(taxz$fin),"Other Eukaryote",taxz$fin)
 unique(taxz$fin)
 
+# Melt data and summarize
 dfTax$tax <- taxz$fin
 dfTax$Taxonomy <- NULL
 dfTaxMelt <- melt(dfTax,id.vars="tax")
 dfTaxMelt <- dfTaxMelt %>% group_by(variable,tax)%>% summarize(s=sum(value))
 
+# Separate experiment and sample type
 varSplit <- colsplit(dfTaxMelt$variable,"_",c("Sample","Exp"))
 dfTaxMelt <- cbind(dfTaxMelt,varSplit)
+
+# Colors for taxonomy
 colrs <- c("Choanoflagellate"="#D46854", "Foraminifera"="#BFA88C","Haptophyte"="#993EE8","Other Stramenopiles"="#D895DD" ,"Chlorophyte"="#72DBBD","Labyrinthulomycete"="#E6B15C" ,"Amoebozoa"="#DBE7D4","Dinoflagellate"="#D2E04E","Discoba"="#72E16B","Diatom"="#D2608C","Other Alveolate"="#DAB8CE","Other Eukaryote"="#7D98D5","Cercozoa"="#C6E198","Fungi"="#84C3D7","Ciliate"="#8169D7","Pelagophyte"="#DB57D1","Other Archaeplastida"="dodgerblue","MAST"="khaki1","Metazoa"="grey")
 
+# Plot function
 taxPltFxn <- function(df,exp,title){
   subs <- subset(df, Exp==paste(exp))
   subsWater <- subset(subs,grepl("Water",subs$Sample))
@@ -61,8 +74,11 @@ taxPltFxn <- function(df,exp,title){
   out <- waterPlot+rotPlot+plot_layout(widths=c(5,20),guides = "collect",nrow=1)+plot_annotation(title=paste(title))
   return(out)}
 
+# Execute plot function
 pExp1 <- taxPltFxn(dfTaxMelt,"Exp1","Experiment #1\n2021")
 pExp2 <- taxPltFxn(dfTaxMelt,"Exp2","Experiment #2\n2021")
 pExp3 <- taxPltFxn(dfTaxMelt,"Exp3","Experiment #3\n2022")
+
+# Make combined ggarrange plot
 ggarrange(pExp1,pExp2,pExp3,common.legend = TRUE,nrow=1,ncol=3,labels=c("a","b","c"),font.label = list(size=12,color="black",face="plain"),hjust=-0.1,vjust=0.5)
-ggsave("TaxaBarplot.pdf",width=17,height=7)
+ggsave("../../TaxaBarplot.pdf",width=17,height=7)
